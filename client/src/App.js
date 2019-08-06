@@ -1,25 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+import { BrowserRouter } from 'react-router-dom'
+import {Provider} from 'react-redux'
+import store from './store'
+
+import NavPage from './pages/NavPage';
+import Router from './Router';
+import Loader from './components/container/Loader';
+import {getProducts} from './store/actions';
+
+// update product List
+store.dispatch(getProducts());
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <BrowserRouter>
+        <NavPage/>
+        <Router/>
+        <Loader />
+      </BrowserRouter>
+    </Provider>
   );
 }
 

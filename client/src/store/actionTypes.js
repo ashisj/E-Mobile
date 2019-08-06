@@ -1,0 +1,8 @@
+export const ADD_PRODUCT = 'ADD_PRODUCT'
+export const SET_PRODUCTS = 'SET_PRODUCTS'
+export const LOADING = 'LOADING'
+export const LOADING_SUCCESS = 'LOADING_SUCCESS'
+export const ADD_ERROR = 'ADD_ERROR'
+export const REMOVE_ERROR = 'REMOVE_ERROR'
+export const SET_PRODUCT_DETAILS = 'SET_PRODUCT_DETAILS'
+export const SET_DETAILS = 'SET_DETAILS'
