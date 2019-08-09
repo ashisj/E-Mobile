@@ -2,19 +2,21 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-
+const logger = require('morgan');
 const app = express();
 
 // routes
 const routes = require('./api/routes/')
 
 // Middleware
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // route Path
 app.use('/api/products',routes.product);
+app.use('/api/cart',routes.cart);
 
 app.use((req,res,next)=>{
     let err = new Error('Not Found');

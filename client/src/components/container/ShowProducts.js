@@ -10,9 +10,10 @@ class ShowProducts extends Component {
     // componentDidMount(){
     //     this.props.getProducts()
     // }
+
+    
     render() {
         const {products} = this.props
-        
         return (
             <>
                 <div className="py-5">
@@ -20,7 +21,7 @@ class ShowProducts extends Component {
                     <Title name="our" title="products"/>
                         <div className="row">
                             {products.map(product => (
-                                <Product product={product} key={product._id} />
+                                <Product product={product} key={product._id} inCart={product.inCart} />
                             ))}
                         </div>
                     </div>

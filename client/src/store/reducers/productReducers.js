@@ -1,10 +1,11 @@
-import { ADD_PRODUCT, SET_PRODUCTS,LOADING,LOADING_SUCCESS, SET_PRODUCT_DETAILS,SET_DETAILS } from '../actionTypes';
+import { ADD_PRODUCT, SET_PRODUCTS,LOADING,LOADING_SUCCESS, SET_PRODUCT_DETAILS,SET_DETAILS, OPEN_PRODUCT_MODAL, CLOSE_PRODUCT_MODAL } from '../actionTypes';
 
 const initialState = {
     products : [],
     loading : false,
     successMessage : '',
-    details: []
+    details: [],
+    productModal : false
 }
 
 const product = (state = initialState ,action) => {
@@ -12,7 +13,7 @@ const product = (state = initialState ,action) => {
         case ADD_PRODUCT:
             return {
                 ...state,
-                products:[action.product.product,...state.products],
+                products:[...state.products,action.product.product],
                 successMessage: `Product added with product id <Link to='/'>${action.product.product._id}</Link>`,
                 loading: false
             }
@@ -42,6 +43,16 @@ const product = (state = initialState ,action) => {
             return {
                 ...state,
                 details : action.product[0]
+            }
+        case OPEN_PRODUCT_MODAL:
+            return {
+                ...state,
+                productModal: true
+            }
+        case CLOSE_PRODUCT_MODAL:
+            return {
+                ...state,
+                productModal: false
             }
         default:
             return state;

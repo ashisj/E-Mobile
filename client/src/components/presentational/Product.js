@@ -1,11 +1,19 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
-import {Link} from 'react-router-dom'
-const Product = ({product}) => {
+import { Link } from 'react-router-dom';
+import { openProductModal,setDetails,addToCart } from '../../store/actions';
+import { connect } from "react-redux";
+
+const Product = ({product,inCart,setDetails,openProductModal,addToCart}) => {
     
     const {_id,title,price} = product;
     const image = product.image[0];
-    
+    function addCart(id){
+        
+        setDetails(id);
+        addToCart(id);
+        openProductModal();
+    }
     return (
         <>
             <ProductWrapper className='col-9 mx-auto col-md-6 col-lg-3 my-3'>
@@ -15,8 +23,16 @@ const Product = ({product}) => {
                         <Link to={`/details/${_id}`}>
                             <img src={image} alt='product' className='card-img-top'/>
                         </Link>
-                        <button className="cart-btn">
-                            <i className="fas fa-cart-plus"/>
+                        <button 
+                            className="cart-btn"
+                            disabled={inCart?true:false}
+                            onClick = {()=>addCart(_id)}
+                        >
+                            {
+                                inCart?
+                                    (<p className="text-capitalize mb-0" disabled>inCart</p>):
+                                    (<i className="fas fa-cart-plus"/>)
+                            }
                         </button>
                     </div>
 
@@ -33,7 +49,7 @@ const Product = ({product}) => {
     )
 }
 
-export default Product;
+export default connect(null,{openProductModal,setDetails,addToCart})(Product);
 
 
 const ProductWrapper = styled.div`

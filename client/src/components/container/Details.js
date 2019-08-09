@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { withRouter } from "react-router-dom";
+import { withRouter,Link } from "react-router-dom";
 import {connect} from 'react-redux';
-import {setDetails,getDetails} from '../../store/actions'
-//import { ButtonContainer } from "./Button";
+import {setDetails,getDetails,openProductModal,addToCart} from '../../store/actions';
+import { ButtonContainer } from '../presentational/Button';
 
 class Details extends Component {
     componentDidMount(){
@@ -13,10 +13,16 @@ class Details extends Component {
             this.props.getDetails(id);
         }
     }
-    
     render() {
-        const {title,image,price,company,info} = this.props.details
+        const {_id,title,image,price,company,info,inCart} = this.props.details
         let displayImage = image ? image[0] : '';
+
+        const addCart = (id) => {
+            
+            //setDetails(id);
+            this.props.addToCart(id);
+            this.props.openProductModal()
+        }
 
         return (
             <div className="container py-5">
@@ -57,22 +63,19 @@ class Details extends Component {
                         </p>
 
                         {/* buttons */}
-                        {/* <Link to="/">
+                        <Link to="/">
                             <ButtonContainer>
                                 back to products
                             </ButtonContainer>
-                        </Link> */}
+                        </Link> 
                         
-                        {/* <ButtonContainer 
+                        <ButtonContainer 
                             cart
                             disabled={inCart?true:false}
-                            onClick = {()=>{
-                                value.addToCart(id);
-                                value.openModal(id);
-                            }}
+                            onClick = {()=>addCart(_id)}
                         >
                             {inCart ? "inCart" : "add to cart"}
-                        </ButtonContainer> */}
+                        </ButtonContainer>
                     </div>
                 </div>
             </div>
@@ -85,4 +88,4 @@ const mapStateToProps = state => ({
     products: state.product.products
 });
 
-export default withRouter(connect(mapStateToProps,{setDetails,getDetails})(Details));
+export default withRouter(connect(mapStateToProps,{setDetails,getDetails,addToCart,openProductModal})(Details));

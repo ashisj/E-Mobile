@@ -8,10 +8,14 @@ import store from './store'
 import NavPage from './pages/NavPage';
 import Router from './Router';
 import Loader from './components/container/Loader';
-import {getProducts} from './store/actions';
+import ProductModal from './components/presentational/ProductModal';
+import {getProducts,getCartIds} from './store/actions';
 
 // update product List
-store.dispatch(getProducts());
+store.dispatch(getCartIds());
+setTimeout(()=>{
+  store.dispatch(getProducts());
+},0);
 
 const App = () => {
   return (
@@ -20,6 +24,7 @@ const App = () => {
         <NavPage/>
         <Router/>
         <Loader />
+        <ProductModal/>
       </BrowserRouter>
     </Provider>
   );

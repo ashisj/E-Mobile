@@ -1,8 +1,17 @@
 export const ADD_PRODUCT = 'ADD_PRODUCT'
 export const SET_PRODUCTS = 'SET_PRODUCTS'
-export const LOADING = 'LOADING'
-export const LOADING_SUCCESS = 'LOADING_SUCCESS'
-export const ADD_ERROR = 'ADD_ERROR'
-export const REMOVE_ERROR = 'REMOVE_ERROR'
 export const SET_PRODUCT_DETAILS = 'SET_PRODUCT_DETAILS'
 export const SET_DETAILS = 'SET_DETAILS'
+export const OPEN_PRODUCT_MODAL = 'OPEN_PRODUCT_MODAL'
+export const CLOSE_PRODUCT_MODAL = 'CLOSE_PRODUCT_MODAL'
+
+export const LOADING = 'LOADING'
+export const LOADING_SUCCESS = 'LOADING_SUCCESS'
+
+export const ADD_ERROR = 'ADD_ERROR'
+export const REMOVE_ERROR = 'REMOVE_ERROR'
+
+export const ADD_TO_CART = 'ADD_TO_CART'
+export const SET_CART_IDS = 'SET_CART_IDS'
+export const SET_CART_DETAILS = 'SET_CART_DETAILS'
+export const UPDATE_CART= 'UPDATE_CART'
