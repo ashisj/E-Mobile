@@ -18,7 +18,7 @@ const GoogleButton = ({googleLogin,loginFail}) => {
     return (
         <>
             <GoogleLogin className="btn btn-block btn-google"
-                clientId="11017181439-leav6t8hv5ckhg5b2dkd483o4kr9s6oo.apps.googleusercontent.com"
+                clientId= {process.env.REACT_APP_GOOGLE_CLIENT_ID}
                 buttonText="Login via Google"
                 onSuccess={responseGoogle}
                 onFailure={responseGoogle}

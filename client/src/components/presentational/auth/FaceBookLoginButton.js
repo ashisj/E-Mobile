@@ -18,7 +18,7 @@ const FaceBookButton = ({facebookLogin,loginFail}) => {
     return (
         <div>
             <FacebookLogin
-                appId="1094246697632754"
+                appId= {REACT_APP_FACEBOOK_CLIENT_ID}
                 autoLoad={false}
                 fields="name,email,picture"
                 cssClass= "btn btn-block btn-facebook"
