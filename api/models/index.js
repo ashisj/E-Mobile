@@ -1,13 +1,20 @@
-const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise
 
-mongoose.connect(process.env.DATABASE,{useNewUrlParser: true},(err)=>{
-    if(err){
+mongoose.connect(process.env.DATABASE).then(
+    () => { 
+        /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
+        console.log('Connected to Mongo');
+        
+    },
+    err => {
+         /** handle initial connection error */ 
+        console.log('error connecting to Mongo: ')
         console.log(err);
-    } else{
-        console.log('Database connected successfully');
     }
-});
+);
 
 module.exports.Product = require('./productModel');
 module.exports.Cart = require('./cartModel');
+module.exports.User = require('./userModel');
+module.exports.db = mongoose.connection;

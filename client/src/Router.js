@@ -14,7 +14,7 @@ const Router = ({history}) => {
                 <Route exact path="/add-product" component={AddProduct} />
                 <Route exact path="/details/:id" component={DetailsPage} />
                 <Route exact path="/cart" component={CartPage} />
-                <Route component={Default}/>
+                {/* <Route component={Default}/> */}
             </Switch>    
         </div>
     )

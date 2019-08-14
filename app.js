@@ -3,6 +3,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const logger = require('morgan');
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const dbConnection = require('./api/models/index').db // loads our connection to the mongo database
+const passport = require('./passport');
 const app = express();
 
 // routes
@@ -12,11 +16,27 @@ const routes = require('./api/routes/')
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(
+	session({
+		secret: process.env.APP_SECRET || 'this is the default passphrase',
+		store: new MongoStore({ mongooseConnection: dbConnection }),
+		resave: false,
+		saveUninitialized: false
+	})
+);
+
+// ===== Passport ====
+app.use(passport.initialize())
+app.use(passport.session()) // will call the deserializeUser
+
+//app.use(express.static(path.join(__dirname, 'public')));
 
 // route Path
+app.use('/auth',routes.user);
 app.use('/api/products',routes.product);
 app.use('/api/cart',routes.cart);
+
 
 app.use((req,res,next)=>{
     let err = new Error('Not Found');
@@ -25,7 +45,6 @@ app.use((req,res,next)=>{
 });
 
 app.use((err,req,res,next) => {
-    console.log(err)
     res.status(err.status || 500).json({
         error: err.message || 'Something went wrong'
     });

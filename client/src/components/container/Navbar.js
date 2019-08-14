@@ -1,8 +1,41 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import {ButtonContainer} from '../presentational/Button'
+import {ButtonContainer} from '../presentational/Button';
+import {openAuthModal,logout} from '../../store/actions';
+import {connect} from 'react-redux'
+
 class Navbar extends Component {
     render() {
+        const {isAuthenticated,user} = this.props;
+        let userDetails;
+        if(isAuthenticated){
+            userDetails = (
+                <>
+                    <li className='nav-item'>
+                        <span className="user-details">{user.name ? user.name : ''}</span>
+                    </li>
+                    <li className='nav-item'>
+                        <ButtonContainer onClick={this.props.logout}>
+                            Logout
+                        </ButtonContainer>
+                    </li>
+                </>
+            )
+        } else {
+            userDetails = (
+                <>
+                    <li className='nav-item'>
+                        <span className="user-details">Guest</span>
+                    </li>
+                    <li className='nav-item'>
+                        <ButtonContainer onClick={this.props.openAuthModal}>
+                            Login & Registration
+                        </ButtonContainer>
+                    </li>
+                </>
+            )
+        }
+
         return (
             <nav className='navbar navbar-expand-md bg-dark navbar-dark'>
                 {/* Brand */}
@@ -21,6 +54,7 @@ class Navbar extends Component {
                         </li>
                     </ul>
                     <ul className='navbar-nav'>
+                        {userDetails}
                         <li className='nav-item'>
                             <Link to='/cart'>
                                 <ButtonContainer>
@@ -38,4 +72,9 @@ class Navbar extends Component {
     }
 }
 
-export default Navbar
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+    user: state.auth.user
+});
+
+export default connect(mapStateToProps,{openAuthModal,logout})(Navbar)
