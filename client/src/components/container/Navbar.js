@@ -49,9 +49,11 @@ class Navbar extends Component {
                 {/* <!-- Navbar links --> */}
                 <div className='collapse navbar-collapse' id='collapsibleNavbar'>
                     <ul className='navbar-nav mr-auto'>
-                        <li className='nav-item'>
-                            <Link className='nav-link' to='/add-product'>add product</Link>
-                        </li>
+                        {user.isAdmin && 
+                            <li className='nav-item'>
+                                <Link className='nav-link' to='/add-product'>add product</Link>
+                            </li>
+                        }
                     </ul>
                     <ul className='navbar-nav'>
                         {userDetails}

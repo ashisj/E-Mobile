@@ -9,6 +9,7 @@ exports.user = async (req,res,next) => {
 				resData.email = user.local.email || user.google.email;
 				resData.name = user.name;
 				resData._id = user._id;
+				resData.isAdmin = user.isAdmin;
 			}
 			let cart = await Cart.findOne({user:user._id});
 			if(cart){
@@ -36,6 +37,7 @@ exports.login = async (req, res,next) => {
 		}
 		cleanUser.name = user.name;
 		cleanUser._id = user._id;
+		cleanUser.isAdmin = user.isAdmin;
 		let cartItem = [];
 		if(req.body.cart){
 			cartItem = await cartControllers.addItemsToCartAtLogin(cleanUser._id,JSON.parse(req.body.cart));
@@ -66,6 +68,7 @@ exports.googleLogin = async (req,res,next) => {
 		}
 		cleanUser._id = user._id;
 		cleanUser.name = user.name;
+		cleanUser.isAdmin = user.isAdmin;
 		let cartItem = [];
 		if(req.body.cart){
 			cartItem = await cartControllers.addItemsToCartAtLogin(cleanUser._id,JSON.parse(req.body.cart));
