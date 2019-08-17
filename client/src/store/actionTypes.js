@@ -15,6 +15,8 @@ export const ADD_TO_CART = 'ADD_TO_CART'
 export const SET_CART_IDS = 'SET_CART_IDS'
 export const SET_CART_DETAILS = 'SET_CART_DETAILS'
 export const UPDATE_CART= 'UPDATE_CART'
+export const UPDATE_CART_TOTALS= 'UPDATE_CART_TOTALS'
+export const CLEAR_CART= 'CLEAR_CART'
 
 export const SET_CURRENT_USER = 'SET_CURRENT_USER'
 export const SET_AUTH_MODAL = 'SET_AUTH_MODAL'

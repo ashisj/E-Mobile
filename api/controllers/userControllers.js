@@ -1,14 +1,19 @@
-const User = require('../models').User;
-
-exports.user = (req,res,next) => {
+const {User,Cart} = require('../models/');
+const cartControllers = require('./cartControllers');
+exports.user = async (req,res,next) => {
 	try{
 		if (req.user) {
 			const user = req.user;
 			const resData = {}
 			if(user.local){
-				resData.email = user.local.email;
+				resData.email = user.local.email || user.google.email;
 				resData.name = user.name;
 				resData._id = user._id;
+			}
+			let cart = await Cart.findOne({user:user._id});
+			if(cart){
+				cart = cart.items.map(item => item.pid);
+				resData.cart = cart
 			}
 			
 			return res.status(200).json({ user : resData })
@@ -20,7 +25,9 @@ exports.user = (req,res,next) => {
 	}
 }
 
-exports.login  = (req, res) => {
+
+
+exports.login = async (req, res,next) => {
 	try{
 		const user = JSON.parse(JSON.stringify(req.user)) // hack
 		const cleanUser = {}
@@ -29,13 +36,25 @@ exports.login  = (req, res) => {
 		}
 		cleanUser.name = user.name;
 		cleanUser._id = user._id;
-		res.status(200).json({ message: 'Login successfull', user: cleanUser })
+		let cartItem = [];
+		if(req.body.cart){
+			cartItem = await cartControllers.addItemsToCartAtLogin(cleanUser._id,JSON.parse(req.body.cart));
+			if(cartItem.length){
+				cleanUser.cart = cartItem;
+			}
+		} else {
+			cartItem = await cartControllers.addItemsToCartAtLogin(cleanUser._id,[]);
+			if(cartItem.length){
+				cleanUser.cart = cartItem;
+			}
+		}
+		return res.status(200).json({ message: 'Login successfull', user: cleanUser})
 	} catch(err){
 		next(err);
 	}
 }
 
-exports.googleLogin = (req,res,next) => {
+exports.googleLogin = async (req,res,next) => {
 	try{
 		if (!req.user) {
 			return res.status(401).json({message:'User Not Authenticated'});
@@ -47,7 +66,19 @@ exports.googleLogin = (req,res,next) => {
 		}
 		cleanUser._id = user._id;
 		cleanUser.name = user.name;
-		res.status(200).json({ message: 'Login successfull', user: cleanUser })
+		let cartItem = [];
+		if(req.body.cart){
+			cartItem = await cartControllers.addItemsToCartAtLogin(cleanUser._id,JSON.parse(req.body.cart));
+			if(cartItem.length){
+				cleanUser.cart = cartItem;
+			}
+		} else {
+			cartItem = await cartControllers.addItemsToCartAtLogin(cleanUser._id,[]);
+			if(cartItem.length){
+				cleanUser.cart = cartItem;
+			}
+		}
+		res.status(200).json({ message: 'Login successfull', user: cleanUser})
 	} catch(err){
 		next(err);
 	}

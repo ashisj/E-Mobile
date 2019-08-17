@@ -3,10 +3,9 @@ const cartControllers = require('../controllers/cartControllers');
 
 router
     .route('/')
-    .get(cartControllers.getCartItems)
     .post(cartControllers.addToCart);
 
-router
-    .route('/ids')
-    .get(cartControllers.getCartIds)
+router.post('/clearCart',cartControllers.clearCart);
+router.post('/removeItem',cartControllers.removeItem);
+
 module.exports = router;

@@ -4,16 +4,12 @@ import Title from '../presentational/Title';
 import CartColumns from '../presentational/cart/CartColumns';
 import EmptyCart from "../presentational/cart/EmptyCart";
 import CartList from "../presentational/cart/CartList";
-//import CartTotals from './CartTotals';
-
-import {getCartItems} from '../../store/actions'
+import CartTotals from '../presentational/cart/CartTotals';
+import {clearCart} from '../../store/actions';
 
 class Cart extends Component {
-    componentDidMount(){
-        this.props.getCartItems();
-    }
     render() {
-        const {cart} = this.props
+        const {cart,total,clearCart} = this.props
         
         if (cart.length > 0){
             return (
@@ -21,7 +17,7 @@ class Cart extends Component {
                     <Title name="your" title="cart" />
                     <CartColumns/>
                     <CartList cart={cart}/>
-                    {/* <CartTotals value={value} history={this.props.history} /> */}
+                    <CartTotals total={total} clearCart={clearCart}/> 
                 </React.Fragment>
             );
         } else {
@@ -32,7 +28,8 @@ class Cart extends Component {
 }
 
 const mapStateToProps = state => ({
-    cart: state.cart.cartDetails
+    cart: state.cart.cartDetails,
+    total: state.cart.total
 });
 
-export default connect(mapStateToProps,{getCartItems})(Cart)
+export default connect(mapStateToProps,{clearCart})(Cart)

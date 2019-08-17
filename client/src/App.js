@@ -10,18 +10,18 @@ import Router from './Router';
 import Loader from './components/container/Loader';
 import ProductModal from './components/presentational/ProductModal';
 import AuthModal from './components/presentational/AuthModal';
-import {getProducts,getCartIds,getUser} from './store/actions';
+import {getProducts,getUser} from './store/actions';
 
 // update product List
 const  initalCall = async () => {
-  await store.dispatch(getCartIds());
-  await store.dispatch(getUser());
   await store.dispatch(getProducts());
+  await store.dispatch(getUser());
 }
 
-initalCall();
+
 
 const App = () => {
+  initalCall();
   return (
     <Provider store={store}>
       <BrowserRouter>

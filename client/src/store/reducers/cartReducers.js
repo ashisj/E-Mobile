@@ -1,8 +1,9 @@
-import {ADD_TO_CART,SET_CART_IDS,SET_CART_DETAILS,UPDATE_CART} from '../actionTypes';
+import {ADD_TO_CART,SET_CART_IDS,SET_CART_DETAILS,UPDATE_CART,UPDATE_CART_TOTALS,CLEAR_CART} from '../actionTypes';
 
 const initialState = {
     cart: [],
-    cartDetails: []
+    cartDetails: [],
+    total:0
 }
 
 const cart = ( state = initialState, action) => {
@@ -10,7 +11,7 @@ const cart = ( state = initialState, action) => {
         case ADD_TO_CART:
             return {
                 ...state,
-                cart: [...state.cart,action.pid]
+                cart: [...action.itemIds]
             }
         case SET_CART_DETAILS:
             return {
@@ -33,6 +34,17 @@ const cart = ( state = initialState, action) => {
                 ...state,
                 cart : cart,
                 cartDetails : [...action.details]
+            }
+        case UPDATE_CART_TOTALS:
+            return {
+                ...state,
+                total: action.total
+            }
+        case CLEAR_CART:
+            return {
+                ...state,
+                cart: [...action.cart],
+                cartDetails: [...action.cartDetails]
             }
         default:
             return state

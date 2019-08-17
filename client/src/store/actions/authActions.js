@@ -1,8 +1,8 @@
 import {SET_AUTH_MODAL,SET_CURRENT_USER,LOGIN_ERROR} from '../actionTypes'
-import {setItemsLoading,loadingSuccess} from './';
+import {setItemsLoading,loadingSuccess,addCartItems,updateProductsForCart,addError,removeError} from './';
 import API from '../../settings/api';
 
-/* Modal */
+/*------------------------------------Authentication  Modal -----------------------------*/
 export const setAuthModal = status => ({
   type: SET_AUTH_MODAL,
   status
@@ -20,8 +20,31 @@ export const openAuthModal = () => {
   }
 }
 
-/* end modal */
+/* end Auth modal */
 
+
+
+/*--------------------------------------- Logout user ------------------------------------ */
+export const logout = () => {
+  return async dispatch => {
+    dispatch(setItemsLoading());
+    try{
+      await API.call('get','/auth/logout');
+      dispatch(setCurrentUser({}));
+      localStorage.removeItem('cart');
+      dispatch(addCartItems([]));
+      dispatch(updateProductsForCart());
+      dispatch(removeError());
+      dispatch(loadingSuccess());
+    } catch(err){
+      dispatch(loadingSuccess());
+      const error = err.response ? err.response.data : err.message;
+      dispatch(addError(error));
+    }
+  };
+};
+
+/*---------------------------------------- Logged In user ------------------------------------*/
 
 // Set User in store
 export const setCurrentUser = user => ({
@@ -29,32 +52,43 @@ export const setCurrentUser = user => ({
   user,
 });
 
-/* Logout user */
-export const logout = () => {
-  return async dispatch => {
-      await API.call('get','/auth/logout');
-      dispatch(setCurrentUser({}));
-  };
-};
-
-/* Login user */
-
 // Get user data from database
 export const getUser = () => {
   return async dispatch => {
+    dispatch(setItemsLoading());
     try{
       const user = await API.call('get','/auth/user');
+
       if(user.user){
         dispatch(setCurrentUser(user.user));
-        dispatch(closeAuthModal())
+        if(user.user.cart){
+          localStorage.setItem('cart',JSON.stringify(user.user.cart));
+          dispatch(addCartItems(JSON.parse(localStorage.getItem('cart'))));
+          dispatch(updateProductsForCart());
+        } 
+        dispatch(closeAuthModal());
+      } else {
+        const cartItems = JSON.parse(localStorage.getItem('cart'));
+        if(cartItems){
+          dispatch(addCartItems(cartItems));
+          dispatch(updateProductsForCart());
+        }
+        dispatch(setCurrentUser({}));
+        dispatch(openAuthModal());
       }
+      dispatch(loadingSuccess());
+      dispatch(removeError())
     } catch(err){
+      const error = err.response ? err.response.data : err.message;
       dispatch(setCurrentUser({}));
       dispatch(closeAuthModal())
+      dispatch(loadingSuccess());
+      dispatch(addError(error));
     }
   }
 }
 
+/* ---------------------------------------------- Log In --------------------------------------------- */
 // error message for login
 export const loginError = message => ({
   type:LOGIN_ERROR,
@@ -72,8 +106,17 @@ export const login = (loginData) => {
   return async dispatch => {
     dispatch(setItemsLoading());
     try{
+      const cartItems = localStorage.getItem('cart')
+      if(cartItems){
+        loginData.cart = cartItems;
+      }
       const user = await API.call('post','/auth/login',loginData);
       dispatch(setCurrentUser(user.user));
+      if(user.user.cart){
+        localStorage.setItem('cart',JSON.stringify(user.user.cart));
+        dispatch(addCartItems(JSON.parse(localStorage.getItem('cart'))));
+        dispatch(updateProductsForCart());
+      }
       dispatch(closeAuthModal());
       dispatch(loadingSuccess());
     } catch(err){
@@ -86,17 +129,29 @@ export const login = (loginData) => {
   }
 }
 
-export const googleLogin = (token) => {
+export const googleLogin = (loginData) => {
   return async dispatch => {
     dispatch(setItemsLoading());
     try{
-      const user = await API.call('post','/auth/google',token);
+      const cartItems = localStorage.getItem('cart')
+      if(cartItems){
+        loginData.cart = cartItems;
+      }
+      const user = await API.call('post','/auth/google',loginData);
       dispatch(setCurrentUser(user.user));
+      if(user.user.cart){
+        localStorage.setItem('cart',JSON.stringify(user.user.cart));
+        dispatch(addCartItems(JSON.parse(localStorage.getItem('cart'))));
+        dispatch(updateProductsForCart());
+      }
       dispatch(closeAuthModal());
       dispatch(loadingSuccess());
     } catch(err){
+      console.log(err);
+      
       dispatch(loadingSuccess());
       dispatch(loginError('Error occoured !!! Please try again....'));
+      dispatch(setCurrentUser({}));
     }
   }
 }
@@ -125,44 +180,3 @@ export const register = (registerData) => {
     console.log(user);
   }
 }
-
-
-
-
-
-
-/*
-import { addError, removeError } from './error';
-
-//import API from '../../services/api';
-
-
-
-export const setToken = token => {
-    API.setToken(token);
-};
-
-export const logout = () => {
-    return dispatch => {
-        localStorage.clear();
-        API.setToken(null);
-        dispatch(setCurrentUser({}));
-        dispatch(removeError());
-  };
-};
-
-export const authUser = (path, data) => {
-  return async dispatch => {
-    try {
-      const { token, ...user } = await API.call('post', `auth/${path}`, data);
-      localStorage.setItem('jwtToken', token);
-      API.setToken(token);
-      dispatch(setCurrentUser(user));
-      dispatch(removeError());
-    } catch (err) {
-      const { error } = err.response.data;     
-      dispatch(addError(error));
-    }
-  };
-};
-*/

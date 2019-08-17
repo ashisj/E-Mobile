@@ -1,52 +1,13 @@
-import {ADD_TO_CART,SET_CART_DETAILS,SET_CART_IDS,UPDATE_CART} from '../actionTypes';
-import {updateProducts,setItemsLoading,loadingSuccess,addError, removeError} from './'
+import {ADD_TO_CART,SET_CART_DETAILS,UPDATE_CART,UPDATE_CART_TOTALS,CLEAR_CART} from '../actionTypes';
+import {updateProductsForCart,setItemsLoading,loadingSuccess,addError, removeError} from './'
 import API from '../../settings/api';
 
+/** ------------------------------ Add Item To Cart --------------------------- */
 // Add Item to cart
-export const addCart = pid =>({
+export const addCartItemsAction = itemIds =>({
     type: ADD_TO_CART,
-    pid
+    itemIds
 });
-
-
-export const addToCart = pid => {
-    return async (dispatch,getState) => {
-        try {
-            const cart = {
-                pid
-            }
-            const product = await API.call('post','/api/cart',cart);
-            dispatch(addCart(product.item.pid));
-            dispatch(updateProducts(pid));
-            dispatch(removeError());
-        } catch(err){
-            const error = err.response ? err.response.data : err.message;
-            dispatch(addError(error));
-        }
-    }
-}
-
-// set the items id which are in cart
-export const setCartIds = ids =>({
-    type: SET_CART_IDS,
-    ids
-});
-
-// get from database
-export const getCartIds = () => {
-    return async (dispatch) => {
-        dispatch(setItemsLoading())
-        try{
-            const cart = await API.call('get','/api/cart/ids');
-            dispatch(setCartIds(cart.cart));
-            dispatch(loadingSuccess)
-            dispatch(removeError());
-        } catch(err){
-            const { error } = err.response.data;
-            dispatch(addError(error));
-        }
-    }
-}
 
 // set cart details which added to cart
 export const setCartDetails = cart =>({
@@ -54,21 +15,62 @@ export const setCartDetails = cart =>({
     cart
 })
 
-// get from database
-export const getCartItems = () => {
-    return async (dispatch) => {
-        dispatch(setItemsLoading())
-        try{
-            const cart = await API.call('get','/api/cart');
-            dispatch(setCartDetails(cart.cart));
+export const addCartItems = itemIds =>{
+    return (dispatch,getState) => {
+        dispatch(addCartItemsAction(itemIds));
+        const products = getState().product.products;
+        let cartProducts = products.filter(product => itemIds.indexOf(product._id) !== -1)
+        cartProducts = cartProducts.map(product => {
+            return {
+                pid:product._id,
+                title:product.title,
+                image:product.image,
+                price:product.price,
+                count: 1
+            }
+        })
+        dispatch(setCartDetails(cartProducts));
+        dispatch(updateTotals());
+    }
+};
+
+export const addToCart = pid => {
+    return async (dispatch,getState) => {
+        const auth = getState().auth;
+        dispatch(setItemsLoading());
+        try {
+            if(auth.isAuthenticated){
+                const cart = {
+                    pid,
+                    userId: auth.user._id 
+                }
+                const product = await API.call('post','/api/cart',cart);
+                const productIds = product.item.items.map(item => item.pid);
+                localStorage.setItem('cart',JSON.stringify(productIds));
+                dispatch(addCartItems(JSON.parse(localStorage.getItem('cart'))));
+                dispatch(updateProductsForCart());
+            } else {
+                let cartItems = JSON.parse(localStorage.getItem('cart'));
+                if(cartItems){
+                    cartItems.push(pid);
+                } else {
+                    cartItems = [pid]
+                }
+                localStorage.setItem('cart',JSON.stringify(cartItems));
+                dispatch(addCartItems(JSON.parse(localStorage.getItem('cart'))));
+                dispatch(updateProductsForCart());
+            }
             dispatch(loadingSuccess());
             dispatch(removeError());
         } catch(err){
-            const { error } = err.response.data;
+            const error = err.response ? err.response.data : err.message;
+            dispatch(loadingSuccess());
             dispatch(addError(error));
         }
     }
 }
+
+
 
 export const updateCart = (cart,details) => ({
     type: UPDATE_CART,
@@ -84,7 +86,8 @@ export const incrementProduct = id => {
         const index = tempCart.indexOf(selectedProduct);
         let product = tempCart[index];
         product.count += 1;
-        dispatch(updateCart([],tempCart))
+        dispatch(updateCart([],tempCart));
+        dispatch(updateTotals());
     }
 }
 
@@ -97,15 +100,60 @@ export const decrementProduct = id => {
         let product = tempCart[index];
         product.count -= 1;
         dispatch(updateCart([],tempCart))
+        dispatch(updateTotals());
     }
 }
 
 export const removetProduct = id => {
+    return async (dispatch,getState) => {
+        dispatch(setItemsLoading());
+        try{
+            const auth = getState().auth;
+            if(auth.isAuthenticated){
+                await API.call('post','api/cart/removeItem',{userId:auth.user._id,pid:id});
+            }
+            let tempCart = JSON.parse(localStorage.getItem('cart'));
+            tempCart = tempCart.filter(item => item !== id);
+            localStorage.setItem('cart',JSON.stringify(tempCart))
+            dispatch(addCartItems(tempCart));
+            dispatch(updateProductsForCart());
+            dispatch(loadingSuccess());
+        } catch(err){
+            dispatch(loadingSuccess());
+            const error = err.response ? err.response.data : err.message;
+            dispatch(addError(error));
+        }
+    }
+}
+
+const updateTotals = () => {
+    let total = 0;
     return (dispatch,getState) => {
-        let tempCart = [...getState().cart.cart];
-        let tempCartDetails = [...getState().cart.cartDetails];
-        tempCartDetails = tempCartDetails.map(item => item.pid !==id );
-        tempCart.splice(tempCart.indexOf(id),1);
-        dispatch(updateCart(tempCart,tempCartDetails))
+        const cartItems = getState().cart.cartDetails;
+        cartItems.map( item => (total += item.price * item.count));
+        dispatch({
+            type:UPDATE_CART_TOTALS,
+            total
+        })
+    }
+}
+
+export const clearCart = () => {
+    return async (dispatch,getState) => {
+        dispatch(setItemsLoading());
+        try{
+            const auth = getState().auth;
+            if(auth.isAuthenticated){
+                await API.call('post','api/cart/clearCart',{userId:auth.user._id});
+            }
+            localStorage.removeItem('cart');
+            dispatch(loadingSuccess());
+            dispatch(addCartItems([]));
+            dispatch(updateProductsForCart());
+        } catch(err){
+            dispatch(loadingSuccess());
+            const error = err.response ? err.response.data : err.message;
+            dispatch(addError(error));
+        }
     }
 }

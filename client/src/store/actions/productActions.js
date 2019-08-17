@@ -128,6 +128,9 @@ export const updateProducts = pid => {
     }
 }
 
+
+
+
 export const getDetails = id => {
     return async dispatch => {
         dispatch(setItemsLoading());
@@ -137,6 +140,55 @@ export const getDetails = id => {
             dispatch(removeError());
         } catch(err){
             const {error} = err.response.data;
+            dispatch(addError(error));
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export const updateProductsForCart = () => {
+    return (dispatch,getState) => {
+        try{
+            const cart = getState().cart.cart;
+            let products = getState().product.products;
+            products = formatProducts(products,cart);
+            dispatch(setProducts(products));
+            dispatch(removeError());
+        } catch(err){
+            const {error} = err.message;
             dispatch(addError(error));
         }
     }
