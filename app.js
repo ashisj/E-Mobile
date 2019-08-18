@@ -8,7 +8,7 @@ const MongoStore = require('connect-mongo')(session);
 const dbConnection = require('./api/models/index').db // loads our connection to the mongo database
 const passport = require('./passport');
 const app = express();
-
+ 
 // routes
 const routes = require('./api/routes/')
 
