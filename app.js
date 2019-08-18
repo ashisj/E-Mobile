@@ -31,7 +31,7 @@ app.use(passport.initialize())
 app.use(passport.session()) // will call the deserializeUser
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, "client", "build")))
 
 // route Path
 app.use('/auth',routes.user);
@@ -40,9 +40,8 @@ app.use('/api/cart',routes.cart);
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
 
 app.use((req,res,next)=>{
