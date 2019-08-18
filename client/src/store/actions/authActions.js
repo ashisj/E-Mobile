@@ -147,10 +147,8 @@ export const googleLogin = (loginData) => {
       dispatch(closeAuthModal());
       dispatch(loadingSuccess());
     } catch(err){
-      console.log(err);
-      
       dispatch(loadingSuccess());
-      dispatch(loginError('Error occoured !!! Please try again....'));
+      //dispatch(loginError('Error occoured !!! Please try again....'));
       dispatch(setCurrentUser({}));
     }
   }
