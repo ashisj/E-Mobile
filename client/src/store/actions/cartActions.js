@@ -1,4 +1,4 @@
-import {ADD_TO_CART,SET_CART_DETAILS,UPDATE_CART,UPDATE_CART_TOTALS,CLEAR_CART} from '../actionTypes';
+import {ADD_TO_CART,SET_CART_DETAILS,UPDATE_CART,UPDATE_CART_TOTALS} from '../actionTypes';
 import {updateProductsForCart,setItemsLoading,loadingSuccess,addError, removeError} from './'
 import API from '../../settings/api';
 
