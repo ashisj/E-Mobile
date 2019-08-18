@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const logger = require('morgan');
+//const logger = require('morgan');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const dbConnection = require('./api/models/index').db // loads our connection to the mongo database
@@ -13,7 +13,7 @@ const app = express();
 const routes = require('./api/routes/')
 
 // Middleware
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
