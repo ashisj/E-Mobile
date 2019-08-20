@@ -1,8 +1,15 @@
 import React from 'react'
-import { Link } from "react-router-dom";
-//import PayPalButton from "./PayPalButton";
-export default function CartTotals({total,clearCart}) {
+import { Link,withRouter } from "react-router-dom";
 
+const CartTotals = ({total,clearCart,isLoggedIn,history,openAuthModal}) => {
+    function checkout(){
+        if(isLoggedIn){
+            history.push('/checkout')
+        } else {
+            alert('You are not logged in please logged in before checkout');
+            openAuthModal();
+        }
+    }
     return (
         <>
             <div className="container">
@@ -18,14 +25,16 @@ export default function CartTotals({total,clearCart}) {
                             <span className="text-title">total :</span>
                             <strong>Rs. {total}</strong>
                         </h5>
-                        {/* <PayPalButton 
-                            total={cartTotal} 
-                            clearCart={clearCart} 
-                            history={history}
-                        /> */}
+                        <button className="btn btn-warning btn-lg tex-uppercase my-3 px-5"
+                            onClick={checkout}
+                        >
+                            Check Out
+                        </button>
                     </div>
                 </div>
             </div>
         </>
     )
 }
+
+export default withRouter(CartTotals);

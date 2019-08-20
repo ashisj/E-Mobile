@@ -18,4 +18,5 @@ mongoose.connect(process.env.DATABASE).then(
 module.exports.User = require('./userModel');
 module.exports.Product = require('./productModel');
 module.exports.Cart = require('./cartModel');
+module.exports.Order = require('./orderModel');
 module.exports.db = mongoose.connection;

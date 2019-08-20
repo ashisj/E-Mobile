@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const dbConnection = require('./api/models/index').db // loads our connection to the mongo database
 const passport = require('./passport');
+const userAuthentication = require('./middleware/userAuthorization');
 const app = express();
 // routes
 const routes = require('./api/routes/')
@@ -35,7 +36,9 @@ app.use(express.static(path.join(__dirname, "client", "build")))
 // route Path
 app.use('/auth',routes.user);
 app.use('/api/products',routes.product);
+app.use(userAuthentication);
 app.use('/api/cart',routes.cart);
+app.use('/api/order',routes.order);
 
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.

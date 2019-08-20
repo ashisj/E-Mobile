@@ -10,7 +10,7 @@ import Router from './Router';
 import Loader from './components/container/Loader';
 import ProductModal from './components/presentational/ProductModal';
 import AuthModal from './components/presentational/AuthModal';
-import {getProducts,getUser} from './store/actions';
+import {getProducts,getUser,addDeliveryData} from './store/actions';
 
 // update product List
 const  initalCall = async () => {

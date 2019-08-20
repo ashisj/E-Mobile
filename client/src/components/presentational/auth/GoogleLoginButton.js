@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 const GoogleButton = ({googleLogin,loginFail}) => {
     const responseGoogle = (response) => {
         if(response.error){
-            loginFail('Error occoured !!! Please try again....');
+            alert("Google OAuth (Open Authorization) will not work for this url")
         } else {
             const loginData = {
                 access_token : response.accessToken
