@@ -1,4 +1,4 @@
-import {SET_AUTH_MODAL,SET_CURRENT_USER,LOGIN_ERROR} from '../actionTypes'
+import {SET_AUTH_MODAL,SET_CURRENT_USER,LOGIN_ERROR,REGISTRATION_SUCCESS,REGISTRATION_FAIL} from '../actionTypes'
 import {setItemsLoading,loadingSuccess,addCartItems,updateProductsForCart,addError,removeError} from './';
 import API from '../../settings/api';
 
@@ -172,9 +172,30 @@ export const facebookLogin = (token) => {
 }
 */
 
+export const registrationFail = () => ({
+  type: REGISTRATION_FAIL
+});
+
+export const registrationSuccess = () => ({
+  type:REGISTRATION_SUCCESS
+});
+
 export const register = (registerData) => {
   return async dispatch => {
-    const user = await API.call('post','/auth/signup',registerData);
-    console.log(user);
+    dispatch(setItemsLoading());
+    try{
+      //const user = 
+      await API.call('post','/auth/signup',registerData);
+      dispatch(registrationSuccess())
+      dispatch(loadingSuccess());
+    } catch(err){
+      if(err.response.status === 500){
+        dispatch(addError('server error'))
+      } else {
+        dispatch(registrationFail())
+      }
+      dispatch(loadingSuccess());
+    }
+    
   }
 }

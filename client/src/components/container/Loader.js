@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import "../../styles/loader.css";
+import "../../styles/modal.css";
 import {connect} from 'react-redux';
 //import PropTypes from 'prop-types';
 
@@ -8,11 +8,13 @@ class Loader extends Component{
         const {loading} = this.props
         if(loading){
             return (
-                <div className="loader">
-                    <div className="content">   
-                        <div className="spinner-grow m-auto" role="status">
-                            <span className="sr-only">Loading...</span>
-                        </div>
+                <div className="app-modal">
+                    <div className="app-modal-content">
+                        <div className="row h-100">   
+                            <div className="spinner-grow m-auto" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </div>  
                     </div>
                 </div>
             )

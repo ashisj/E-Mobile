@@ -19,21 +19,30 @@ export class Register extends Component {
         register[[e.target.id]] = e.target.value;
         this.setState({
             register
-        })
+        });
     } 
 
     submitUserInfo = (e) => {
         e.preventDefault();
         const user = {...this.state.register}
         this.props.register(user);
+        const register = {...user}
+        for(const key of Object.keys(register)){
+            register[key] = ''
+        }
+        this.setState({
+            register:register
+        });
     }
 
     render() {
         const {register} = this.state;
-
+        const {registerMessage,status} = this.props;
+        
         return (
             <div id="register" className="tab-pane fade show" role="tabpanel">
                 <h4 className="card-title mt-3 text-center">Create Account</h4>
+                <h6 className = {status ? 'text-success' : 'text-danger'}>{registerMessage}</h6>
         	    <form onSubmit={this.submitUserInfo}>
         	        <div className="form-group input-group">
         		        <div className="input-group-prepend">
@@ -66,4 +75,9 @@ export class Register extends Component {
     }
 }
 
-export default connect(null,{register})(Register)
+const mapStateToProps = state => ({
+    registerMessage: state.auth.registerMessage,
+    status: state.auth.registerStatus
+});
+
+export default connect(mapStateToProps,{register})(Register)

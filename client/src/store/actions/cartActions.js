@@ -150,6 +150,7 @@ export const clearCart = () => {
             dispatch(loadingSuccess());
             dispatch(addCartItems([]));
             dispatch(updateProductsForCart());
+            dispatch(removeError());
         } catch(err){
             dispatch(loadingSuccess());
             const error = err.response ? err.response.data : err.message;

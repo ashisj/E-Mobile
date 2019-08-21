@@ -18,6 +18,20 @@ export class DeliverInformation extends Component {
         }
     }
     
+    componentDidMount(){
+        const {name,address,state,dist,city,pincode} = this.props.deliveryInfo || '';
+        const deliveryInfo = {
+            name: name || '',
+            address: address || '',
+            state: state || '',
+            dist: dist || '',
+            city: city || '',
+            pincode: pincode || ''
+        }
+        this.setState({
+            deliveryInfo
+        });        
+    }
     handleChange = (e) => {
         const deliveryInfo = this.state.deliveryInfo;
         deliveryInfo[[e.target.id]] = e.target.value
@@ -94,4 +108,8 @@ export class DeliverInformation extends Component {
     }
 }
 
-export default connect(null,{addDeliveryData})(DeliverInformation);
+const mapStateToProps = state => ({
+    deliveryInfo : state.order.deliveryInfo
+});
+
+export default connect(mapStateToProps,{addDeliveryData})(DeliverInformation);

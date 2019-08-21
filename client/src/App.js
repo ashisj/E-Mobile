@@ -8,9 +8,10 @@ import store from './store'
 import NavPage from './pages/NavPage';
 import Router from './Router';
 import Loader from './components/container/Loader';
+import Error from './components/container/Error';
 import ProductModal from './components/presentational/ProductModal';
 import AuthModal from './components/presentational/AuthModal';
-import {getProducts,getUser,addDeliveryData} from './store/actions';
+import {getProducts,getUser} from './store/actions';
 
 // update product List
 const  initalCall = async () => {
@@ -27,9 +28,10 @@ const App = () => {
       <BrowserRouter>
         <NavPage/>
         <Router/>
-        <Loader />
+        <Loader/>
         <ProductModal/>
         <AuthModal/>
+        <Error/>
       </BrowserRouter>
     </Provider>
   );

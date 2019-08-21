@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-
+import {withRouter} from 'react-router-dom'
 class RazorpayButton extends Component{
     componentDidMount(){
         const script = document.createElement("script");
@@ -9,8 +9,11 @@ class RazorpayButton extends Component{
     }
 
     placeOrder = (paymentId) => {
-        this.props.placeOrder(paymentId);
+        this.props.placeOrder(paymentId).then((res) =>{
+            this.props.history.push('/')
+        });
     }
+    
     paymentHandler = (e) => {
         e.preventDefault();
         let options = {
@@ -40,4 +43,4 @@ class RazorpayButton extends Component{
     }
 }
 
-export default RazorpayButton;
+export default withRouter(RazorpayButton);
