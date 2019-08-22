@@ -27,6 +27,7 @@ exports.placeOrder = async (req,res,next) => {
         const orderResponse = await newOrder.save();
         const message = orderSuccess(orderResponse.orders[orderResponse.orders.length - 1],name);
         MailMiddleware.sendMail(email,message);
+        //MailMiddleware.placeOrderSuccess(orderResponse.orders[orderResponse.orders.length - 1],name)
         return res.status(200).json({order:orderResponse, message: 'Ordered successful'});
     } catch(err){
         const message = orderFailure(name,transactionId);
@@ -60,41 +61,63 @@ function orderSuccess(order,userName){
     const {name,address,city,dist,state,pincode} = order.deliveryDetails;
 
     return `
-        Dear ${userName},
-        Your order is placed successfully with transaction Id ${order.transactionId}.
-        </br>
-        You have ordered below items.
-        </br>
+        <table>
+            <tr>
+                Dear ${userName},
+            </tr>
+            <tr>
+                Your order is placed successfully with transaction Id ${order.transactionId}.
+            </tr>
+            <tr>
+                You have ordered below items.
+            </tr>
+        </table>
         <table>
             <tr>
                 <th>Title</th>
                 <th>Price</th>
-                <th>Numbers of pieces</th>
+                <th>Numbers</th>
                 <th>Cost</th>
             </tr>
             ${orderedItems}
         </table>
+        <table>
+            <tr>
+                It will be delivered to 
+            </tr>
+            <tr>
+                ${name} 
+            </tr>
+            <tr>
+                ${address} 
+            </tr>
+            <tr>
+                ${city},${dist} 
+            </tr>
+            <tr>
+                ${state},PinCode - ${pincode} 
+            </tr>
+        </table>
 
-        It will be delivered to 
-        </br>
-        ${name} 
-        </br>
-        ${address} 
-        </br>
-        ${city},${dist} 
-        </br>
-        ${state},PinCode - ${pincode} 
-        </br></br>
-
-    Thank You for shopping with E-Mobile
+        Thank You for shopping with E-Mobile
     `
 }
 
 function orderFailure(userName,transactionId){
     return `
-        Dear ${userName},
-        Sorry your ordered is unsuccessful.
-        Your money will refund within 7 working days.
-        Your transaction number is ${transactionId}.
+        <table>
+            <tr>
+                Dear ${userName},
+            </tr>
+            <tr>
+                Sorry your ordered is unsuccessful.
+            </tr>
+            <tr>
+                Your money will refund within 7 working days.
+            </tr>
+            <tr>
+                Your transaction number is ${transactionId}.
+            </tr>
+        </table>
     `
 }

@@ -1,6 +1,6 @@
 const nodeMailer = require('nodemailer')
 
-const mailService = nodeMailer.createTransport({
+const transporter = nodeMailer.createTransport({
     service: process.env.MAIL_SERVICE,
     auth: {
         user: process.env.MAIL_USER,
@@ -19,10 +19,8 @@ const setMailOption = (email,message) => {
 };
 
 exports.sendMail = (userEmail,message) => {
-    //let transporter = mailService
     mailOptions = setMailOption(userEmail,message);
-    //transporter.sendMail(mailOptions, (error, info) => {
-    mailService.sendMail(mailOptions, (error, info) => {
+    transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
             return console.log(error);
         }
