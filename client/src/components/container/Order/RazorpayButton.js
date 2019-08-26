@@ -18,7 +18,7 @@ class RazorpayButton extends Component{
         e.preventDefault();
         let options = {
             "key": process.env.REACT_APP_RAZORPAY_CLIENT_ID,
-            "amount": this.props.total, 
+            "amount": this.props.total * 100, 
             "name": "E-Mobile",
             "description": "Order Mobile",
             "image": "/image/logo.png",
